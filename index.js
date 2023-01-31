@@ -82,3 +82,19 @@ function viewEmployees() {
 };
 
 
+function addDepartment() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "department",
+      message: "What is the name of the department"
+    }
+  ])
+    .then(response => {
+      db.query(`INSERT INTO department (name) VALUES ('${response.department}')`, (err, results) => {
+        if (err) throw err;
+        chooseQuestion()
+      });
+    })
+}
+
