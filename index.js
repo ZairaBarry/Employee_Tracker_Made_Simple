@@ -55,5 +55,22 @@ function chooseQuestion() {
     })
 };
 
+// Query Section 
+
+function viewDepartments() {
+  db.query('SELECT * FROM department', (err, results) => {
+    if (err) throw err;
+    console.table(results)
+    chooseQuestion()
+  })
+};
+
+function viewRoles() {
+  db.query("SELECT role.ID, role.title as role_title, role.salary AS role_salary, department.name AS depName FROM role LEFT JOIN department ON role.department_id = department.id", (err, results) => {
+    if (err) throw err;
+    console.table(results)
+    chooseQuestion()
+  })
+};
 
 
