@@ -131,3 +131,44 @@ function addRole() {
     })
 }
 
+function addEmployee() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "first_name",
+      message: "What is the first name of the employee?"
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "What is the last name of the employee?"
+    },
+
+    {
+      type: "input",
+      name: "role_id",
+      message: "What is the role of the employee?"
+    },
+    {
+      type: "input",
+      name: "manager_id",
+      message: "What is the manager ID of the employee?"
+    },
+  ]
+  )
+    .then(response => {
+      db.query("INSERT INTO employee SET ?",
+        {
+          first_tname: response.first_name,
+          last_name: response.last_name,
+          role_id: response.role_id,
+          manager_id: response.manager_id
+        }, (err, results) => {
+          if (err) throw err;
+          chooseQuestion()
+
+        })
+    })
+}
+
+chooseQuestion();
