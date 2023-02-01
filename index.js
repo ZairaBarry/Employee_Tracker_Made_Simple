@@ -136,7 +136,7 @@ function addRole() {
 
         })
     })
-};
+}
 
 function addEmployee() {
   inquirer.prompt([
