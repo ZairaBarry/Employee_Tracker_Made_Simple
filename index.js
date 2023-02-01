@@ -20,6 +20,7 @@ function chooseQuestion() {
         "Add a role",
         "Add an employee",
         "Update employee role",
+        "View budget of the department"
       ]
     })
     .then(response => {
@@ -50,6 +51,10 @@ function chooseQuestion() {
 
         case "Update employee role":
           updateRole();
+          break;
+
+        case "View budget of the department":
+          sumSalary();
           break;
       }
     })
@@ -93,6 +98,7 @@ function addDepartment() {
     .then(response => {
       db.query(`INSERT INTO department (name) VALUES ('${response.department}')`, (err, results) => {
         if (err) throw err;
+        console.log(`${response.department} department has been added!`);
         chooseQuestion()
       });
     })
@@ -125,11 +131,12 @@ function addRole() {
           department_id: response.department_id
         }, (err, results) => {
           if (err) throw err;
+          console.log(`${response.title} role has been added!`);
           chooseQuestion()
 
         })
     })
-}
+};
 
 function addEmployee() {
   inquirer.prompt([
@@ -153,22 +160,59 @@ function addEmployee() {
       type: "input",
       name: "manager_id",
       message: "What is the manager ID of the employee?"
-    },
-  ]
+    }]
   )
     .then(response => {
-      db.query("INSERT INTO employee SET ?",
-        {
-          first_tname: response.first_name,
-          last_name: response.last_name,
-          role_id: response.role_id,
-          manager_id: response.manager_id
-        }, (err, results) => {
+      db.query('INSERT INTO employee (first_name,last_name, role_id, manager_id) VALUES (? ? ? ?)', [response.first_name, response.last_name, response.role_id, response.manager_id],
+        (err, results) => {
           if (err) throw err;
-          chooseQuestion()
+          console.log(`${response.last_name} employee has been added!`);
+          chooseQuestion();
 
         })
     })
-}
+};
 
-chooseQuestion();
+function updateRole() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "first_name",
+      message: "Please enter the name of the employee",
+
+    },
+    {
+      type: "input",
+      name: "role_id",
+      message: "Which role do you want to assign to selected employee? Enter role_id",
+    }]
+  )
+    .then(response => {
+      db.query("UPDATE  employee SET role_id=? WHERE first_name=?", [response.role_id, response.first_name],
+        function (err, res) {
+          if (err) throw err;
+          console.log(`${response.first_name} role has been updated!`)
+
+          chooseQuestion()
+        }
+      );
+    })
+};
+
+function sumSalary() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "department.name",
+      message: "Please enter the name of the deparmtnet you would like to see the total utilized budget for",
+    }]
+  )
+    .then(response => {
+      db.query("SELECT department.name, SUM(role.salary) FROM department JOIN role on department.ID =role.department_id GROUP BY department.name", (err, results) => {
+        if (err) throw err;
+        console.table(results)
+        chooseQuestion()
+      });
+    })
+};
+chooseQuestion()
