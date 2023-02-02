@@ -45,7 +45,7 @@ function chooseQuestion() {
           addRole();
           break;
 
-        case "Add employee":
+        case "Add an employee":
           addEmployee();
           break;
 
@@ -79,7 +79,7 @@ function viewRoles() {
 };
 
 function viewEmployees() {
-  db.query("SELECT employee.ID, employee.first_name, employee.last_name, role.title AS role_title, department.name AS dep_name, role.salary AS role_salary, CONCAT (manager.first_name, manager.last_name) AS manager FROM employee LEFT JOIN role ON role.ID = employee.role_id LEFT JOIN department ON department.ID = role.department_id LEFT JOIN  employee manager  ON employee.manager_id= manager.ID", (err, results) => {
+  db.query("SELECT employee.ID, employee.first_name, employee.last_name, role.title AS role_title, department.name AS dep_name, role.salary AS role_salary, CONCAT (manager.first_name,' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON role.ID = employee.role_id LEFT JOIN department ON department.ID = role.department_id LEFT JOIN  employee manager  ON employee.manager_id= manager.ID", (err, results) => {
     if (err) throw err;
     console.table(results)
     chooseQuestion()
@@ -163,7 +163,14 @@ function addEmployee() {
     }]
   )
     .then(response => {
-      db.query('INSERT INTO employee (first_name,last_name, role_id, manager_id) VALUES (? ? ? ?)', [response.first_name, response.last_name, response.role_id, response.manager_id],
+      db.query('INSERT INTO employee SET ?',
+        {
+          first_name: response.first_name,
+          last_name: response.last_name,
+          role_id: response.role_id,
+          manager_id: response.manager_id
+        },
+
         (err, results) => {
           if (err) throw err;
           console.log(`${response.last_name} employee has been added!`);
@@ -208,7 +215,7 @@ function sumSalary() {
     }]
   )
     .then(response => {
-      db.query("SELECT department.name, SUM(role.salary) FROM department JOIN role on department.ID =role.department_id GROUP BY department.name", (err, results) => {
+      db.query(`SELECT department.name, SUM(role.salary) FROM department JOIN role on department.ID =role.department_id  WHERE department.name = ('${response.department.name}') ` + `GROUP BY department.name `, (err, results) => {
         if (err) throw err;
         console.table(results)
         chooseQuestion()
