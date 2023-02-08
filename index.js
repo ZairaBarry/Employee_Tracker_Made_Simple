@@ -61,6 +61,7 @@ function chooseQuestion() {
 };
 
 // Query Section 
+// function to view All Departments
 
 function viewDepartments() {
   db.query('SELECT * FROM department', (err, results) => {
@@ -70,6 +71,7 @@ function viewDepartments() {
   })
 };
 
+// Function to view roles by department
 function viewRoles() {
   db.query("SELECT role.ID, role.title as role_title, role.salary AS role_salary, department.name AS depName FROM role LEFT JOIN department ON role.department_id = department.id", (err, results) => {
     if (err) throw err;
@@ -78,6 +80,7 @@ function viewRoles() {
   })
 };
 
+// Function to view employees with the corresponding manager name
 function viewEmployees() {
   db.query("SELECT employee.ID, employee.first_name, employee.last_name, role.title AS role_title, department.name AS dep_name, role.salary AS role_salary, CONCAT (manager.first_name,' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON role.ID = employee.role_id LEFT JOIN department ON department.ID = role.department_id LEFT JOIN  employee manager  ON employee.manager_id= manager.ID", (err, results) => {
     if (err) throw err;
@@ -86,6 +89,7 @@ function viewEmployees() {
   })
 };
 
+// function to add department to database
 
 function addDepartment() {
   inquirer.prompt([
@@ -104,6 +108,7 @@ function addDepartment() {
     })
 }
 
+// function to add role to corresponnding department
 function addRole() {
   inquirer.prompt([
     {
@@ -138,6 +143,7 @@ function addRole() {
     })
 }
 
+// functio to add employee
 function addEmployee() {
   inquirer.prompt([
     {
@@ -154,7 +160,7 @@ function addEmployee() {
     {
       type: "input",
       name: "role_id",
-      message: "What is the role of the employee?"
+      message: "What is the role id of the employee?"
     },
     {
       type: "input",
@@ -180,6 +186,7 @@ function addEmployee() {
     })
 };
 
+// function to change the roles
 function updateRole() {
   inquirer.prompt([
     {
@@ -206,6 +213,7 @@ function updateRole() {
     })
 };
 
+// function to view utilized budget by department
 function sumSalary() {
   inquirer.prompt([
     {

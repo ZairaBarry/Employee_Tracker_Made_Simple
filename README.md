@@ -29,6 +29,8 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ![Screenshot of application](./Assets/Screenshot.jpg)
 
+link to the walkthrough video -https://drive.google.com/file/d/1uAMvb3KugVDo2C9sVIwAFnKfUAkhZWNP/view
+
 
 ## Tests
 
